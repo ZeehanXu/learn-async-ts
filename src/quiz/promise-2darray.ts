@@ -7,25 +7,28 @@
 function sum2DArray(arr: number[][]): Promise<number> {
     return new Promise((resolve, reject) => {
         console.log('Sum called ... ');
-        if(arr.length === 0) {
+        if (arr.length === 0) {
             reject('Cannot sum an empty array');
         }
-        /** schedule the execution of the function to the next event loop cycle.
-         * This is done using setTimeout() to simulate an asynchronous operations.
-         * 
-         * Replace the logic in the setTimeout() with the actual logic to sum the numbers
-         * to understand the difference in execution with and without setTimeout()
-         **/
-        setTimeout(() => {
-            let sum = 0;
-            for (let i = 0; i < arr.length; i++) {
-                for (let j = 0; j < arr[i].length; j++) {
-                    console.log(`Adding ${arr[i][j]} to sum`);
-                    sum += arr[i][j];
+
+        const promises = arr.map(row => {
+            return new Promise<number>((resolve) => {
+                let rowSum = 0;
+                for (let num of row) {
+                    console.log(`Adding ${num} to rowSum`);
+                    rowSum += num;
                 }
-            }
-            resolve(sum);
-        }, 0);
+                resolve(rowSum);
+            });
+        });
+
+        Promise.all(promises)
+            .then(rowSums => {
+                const totalSum = rowSums.reduce((acc, curr) => acc + curr, 0);
+                resolve(totalSum);
+            })
+            .catch(error => reject(error));
+
         console.log('returning from sum');
     });
 }
@@ -38,7 +41,9 @@ const array2D = [
 ];
 
 const sumPromise1 = sum2DArray(array2D);
-console.log('sumPromise1:', sumPromise1);
+sumPromise1.then((sum) => console.log('Sum:', sum))
+.catch((error) => console.log('Error:', error));;
 
 const sumPromise2 = sum2DArray([]);
-console.log('sumPromise2:', sumPromise2);
+sumPromise2.then((sum) => console.log('Sum:', sum))
+.catch((error) => console.log('Error:', error));;

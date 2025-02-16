@@ -2,3 +2,10 @@
 - Is there a difference in the flow of execution from when the code was in the setTimeout function?
 - Is the flow of execution in both these examples different from the flow of execution with the examples using the fetch() API, which also returns a promise? 
 - If yes, explain the code execution difference. Add your explanation to this file.
+
+When you remove the setTimeout function and directly execute the code, the flow of execution changes. 
+Without setTimeout, the code runs synchronously, meaning it will block the main thread until the operation is complete. 
+
+Yes, the flow of execution is different. The fetch() API is inherently asynchronous and non-blocking because it performs network requests. 
+When we use fetch(), the request is sent, and the JavaScript engine continues executing the rest of the code without waiting for the response. 
+Once the response is received, the Promise returned by fetch() is resolved or rejected, and the corresponding .then() or .catch() handlers are executed.
